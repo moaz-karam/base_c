@@ -17,7 +17,7 @@ typedef struct {
     DLL* dll;
 } DLL_Iterator;
 
-void dll_initialize(DLL* dll);
+DLL* dll_create();
 void dll_addLast(DLL* dll, void* data);
 void dll_addFirst(DLL* dll, void* data);
 void* dll_getLast(DLL* dll);
@@ -28,7 +28,7 @@ void dll_removeFirst(DLL* dll);
 void dll_remove(DLL* dll, void* data);
 void dll_end(DLL* dll);
 
-DLL_Iterator* dll_iter_create(DLL* dll);
+DLL_Iterator* dll_iter_create();
 void dll_iter_set(DLL_Iterator* iter, DLL* dll);
 int dll_iter_hasNext(DLL_Iterator* iter);
 void dll_iter_next(DLL_Iterator* iter);
@@ -37,13 +37,17 @@ void dll_iter_remove(DLL_Iterator* iter);
 void dll_iter_end(DLL_Iterator* iter);
 
 
-void dll_initialize(DLL* dll) {
+DLL* dll_create() {
+
+    DLL* dll = malloc(sizeof(DLL));
+
     dll->sentinel = malloc(sizeof(Node));
     
     dll->sentinel->next = dll->sentinel;
     dll->sentinel->prev = dll->sentinel;
     
     dll->size = 0;
+    return dll;
 }
 
 void dll_addLast(DLL* dll, void* data) {
@@ -147,21 +151,21 @@ void dll_remove(DLL* dll, void* data) {
 }
 
 void dll_end(DLL* dll) {
-    DLL_Iterator* removeIter = dll_iter_create(dll);
+    DLL_Iterator* removeIter = dll_iter_create();
 
+    dll_iter_set(removeIter, dll);
     while (dll->size > 0) {
         dll_iter_remove(removeIter);
     }
 
     dll_iter_end(removeIter);
     free(dll->sentinel);
+    free(dll);
 }
 
 
-DLL_Iterator* dll_iter_create(DLL* dll) {
+DLL_Iterator* dll_iter_create() {
     DLL_Iterator* iter = malloc(sizeof(DLL_Iterator));
-    iter->node = dll->sentinel->next;
-    iter->dll = dll;
     return iter;
 }
 

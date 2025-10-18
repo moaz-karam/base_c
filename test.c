@@ -3,18 +3,16 @@
 
 
 int main() {
-    DLL dll;
+    DLL* dll = dll_create();
 
-    dll_initialize(&dll);
-
-    DLL_Iterator* iter = dll_iter_create(&dll);
+    DLL_Iterator* iter = dll_iter_create();
     for (int i = 0; i < 100; i += 1) {
         int* temp = malloc(sizeof(int));
         *temp = i;
-        dll_addLast(&dll, temp);
+        dll_addLast(dll, temp);
     }
     
-    dll_iter_set(iter, &dll);
+    dll_iter_set(iter, dll);
     for (iter; dll_iter_hasNext(iter); dll_iter_next(iter)) {
         int n = *(int*)dll_iter_data(iter);
         printf("%i\n", n);
@@ -22,7 +20,6 @@ int main() {
 
     dll_iter_end(iter);
     
-    dll_end(&dll);
-
+    dll_end(dll);
     return 0;
 }
